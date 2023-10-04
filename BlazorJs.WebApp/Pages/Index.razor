@@ -1,0 +1,27 @@
+﻿@page "/"
+
+@using BlazorJs.Ui.JsInterop;
+@using BlazorJs.Ui.Models;
+
+@inject WindowEventInterop WindowEventInterop
+
+<h1>Hello, world!</h1>
+<p>A dimensão da janela é de</p>
+<h1>@Window?.Width x @Window?.Height</h1>
+
+@code {
+    public Window? Window { get; private set; }
+    protected override async void  OnInitialized()
+    {
+        await WindowEventInterop.InitWindowWidthListener();
+        WindowEventInterop.OnWindowStateChanged += WindowEventInterop_OnResize;
+        Window = WindowEventInterop.window;
+        StateHasChanged();
+    }
+
+    private void WindowEventInterop_OnResize(Ui.Models.Window window, EventArgs e)
+    {
+        Window = window;
+        StateHasChanged();
+    }
+}
